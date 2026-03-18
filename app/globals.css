@@ -58,12 +58,20 @@ ul {
   list-style: none;
 }
 
-/* Glassmorphism panel */
+/* Glassmorphism surfaces */
+.glass,
 .glass-panel {
   background: rgba(18, 18, 18, 0.6);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-color);
+}
+
+.glass {
+  background: rgba(18, 18, 18, 0.75);
+}
+
+.glass-panel {
   border-radius: var(--radius-md);
 }
 
