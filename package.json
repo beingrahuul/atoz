@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@types/jszip": "^3.4.0",
+    "@vercel/analytics": "file:vendor/vercel-analytics",
     "@xenova/transformers": "^2.17.2",
     "browser-image-compression": "^2.0.2",
     "exifr": "^7.1.3",

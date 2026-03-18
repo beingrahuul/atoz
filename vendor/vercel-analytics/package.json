@@ -1,0 +1,11 @@
+{
+  "name": "@vercel/analytics",
+  "version": "1.5.0",
+  "type": "module",
+  "exports": {
+    "./next": "./next.js"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  }
+}
