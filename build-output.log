@@ -1,0 +1,45 @@
+
+> atoz@0.1.0 build
+> next build
+
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+▲ Next.js 16.1.6 (Turbopack)
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 6.8s
+  Running TypeScript ...
+  Collecting page data using 1 worker ...
+  Generating static pages using 1 worker (0/18) ...
+  Generating static pages using 1 worker (4/18) 
+  Generating static pages using 1 worker (8/18) 
+Couldn't load fs
+Couldn't load zlib
+  Generating static pages using 1 worker (13/18) 
+✓ Generating static pages using 1 worker (18/18) in 350.8ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /tools/compress-image
+├ ○ /tools/compress-pdf
+├ ○ /tools/convert-image
+├ ○ /tools/edit-image
+├ ○ /tools/image-to-pdf
+├ ○ /tools/merge-pdf
+├ ○ /tools/organize-pdf
+├ ○ /tools/pdf-to-image
+├ ○ /tools/protect-pdf
+├ ○ /tools/remove-exif
+├ ○ /tools/resize-image
+├ ○ /tools/split-pdf
+├ ○ /tools/watermark-image
+└ ○ /tools/watermark-pdf
+
+
+○  (Static)  prerendered as static content
+
