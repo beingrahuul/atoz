@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useState, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { UploadCloud } from 'lucide-react';
 import styles from './FileUploadDropzone.module.css';
 
@@ -22,6 +22,19 @@ export default function FileUploadDropzone({
     const [isDragActive, setIsDragActive] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
 
+    const emitFiles = useCallback((fileList: FileList | null) => {
+        if (!fileList || fileList.length === 0) {
+            return;
+        }
+
+        const filesArray = Array.from(fileList);
+        onFilesSelected(multiple ? filesArray : [filesArray[0]]);
+
+        if (inputRef.current) {
+            inputRef.current.value = '';
+        }
+    }, [multiple, onFilesSelected]);
+
     const handleDrag = useCallback((e: React.DragEvent) => {
         e.preventDefault();
         e.stopPropagation();
@@ -36,23 +49,23 @@ export default function FileUploadDropzone({
         e.preventDefault();
         e.stopPropagation();
         setIsDragActive(false);
-
-        if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-            const filesArray = Array.from(e.dataTransfer.files);
-            onFilesSelected(multiple ? filesArray : [filesArray[0]]);
-        }
-    }, [multiple, onFilesSelected]);
+        emitFiles(e.dataTransfer.files);
+    }, [emitFiles]);
 
     const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files.length > 0) {
-            const filesArray = Array.from(e.target.files);
-            onFilesSelected(multiple ? filesArray : [filesArray[0]]);
-        }
-    }, [multiple, onFilesSelected]);
+        emitFiles(e.target.files);
+    }, [emitFiles]);
 
-    const onButtonClick = () => {
+    const onButtonClick = useCallback(() => {
         inputRef.current?.click();
-    };
+    }, []);
+
+    const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onButtonClick();
+        }
+    }, [onButtonClick]);
 
     return (
         <div
@@ -62,6 +75,10 @@ export default function FileUploadDropzone({
             onDragOver={handleDrag}
             onDrop={handleDrop}
             onClick={onButtonClick}
+            onKeyDown={handleKeyDown}
+            role="button"
+            tabIndex={0}
+            aria-label={title}
         >
             <input
                 type="file"
