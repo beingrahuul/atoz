@@ -4,10 +4,7 @@ import React, { useState } from 'react';
 import { FileImage, Download } from 'lucide-react';
 import ToolLayout from '../../../components/ToolLayout';
 import FileUploadDropzone from '../../../components/FileUploadDropzone';
-import * as pdfjsLib from 'pdfjs-dist';
 import JSZip from 'jszip';
-
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
 
 export default function PdfToImagePage() {
     const [file, setFile] = useState<File | null>(null);
@@ -33,6 +30,10 @@ export default function PdfToImagePage() {
         setDownloadUrl(null);
 
         try {
+            // Dynamically import pdfjs-dist to avoid DOMMatrix error during SSR/prerender
+            const pdfjsLib = await import('pdfjs-dist');
+            pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+
             const fileArrayBuffer = await file.arrayBuffer();
             setProgressLog("Loading PDF engine...");
             const pdf = await pdfjsLib.getDocument(fileArrayBuffer).promise;
@@ -57,9 +58,8 @@ export default function PdfToImagePage() {
 
                 const renderContext = {
                     canvasContext: context,
-                    viewport: viewport,
-                    canvasFactory: undefined as any
-                };
+                    viewport: viewport
+                } as any;
 
                 await page.render(renderContext).promise;
 

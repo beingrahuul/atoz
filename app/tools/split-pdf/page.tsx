@@ -78,7 +78,7 @@ export default function SplitPdfPage() {
             setProgressLog("Saving compiled document...");
             const pdfBytes = await newPdf.save();
 
-            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+            const blob = new Blob([pdfBytes as any], { type: 'application/pdf' });
             const url = URL.createObjectURL(blob);
             setDownloadUrl(url);
 

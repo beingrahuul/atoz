@@ -5,9 +5,7 @@ import { Layers, Download, GripVertical, Trash2 } from 'lucide-react';
 import ToolLayout from '../../../components/ToolLayout';
 import FileUploadDropzone from '../../../components/FileUploadDropzone';
 import { PDFDocument } from 'pdf-lib';
-import * as pdfjsLib from 'pdfjs-dist';
 
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
 
 interface PageData {
     originalIndex: number;
@@ -29,6 +27,10 @@ export default function OrganizePdfPage() {
             setProgressLog("Loading document pages for preview...");
 
             try {
+                // Dynamically import pdfjs-dist to avoid DOMMatrix error during SSR/prerender
+                const pdfjsLib = await import('pdfjs-dist');
+                pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+
                 const fileArrayBuffer = await files[0].arrayBuffer();
                 const pdf = await pdfjsLib.getDocument(fileArrayBuffer).promise;
                 const numPages = pdf.numPages;
@@ -47,7 +49,7 @@ export default function OrganizePdfPage() {
                     canvas.width = viewport.width;
 
                     if (context) {
-                        await page.render({ canvasContext: context, viewport, canvasFactory: undefined as any }).promise;
+                        await page.render({ canvasContext: context, viewport } as any).promise;
                         newPages.push({
                             originalIndex: i - 1,
                             previewUrl: canvas.toDataURL('image/jpeg', 0.5)
@@ -99,7 +101,7 @@ export default function OrganizePdfPage() {
             setProgressLog("Saving compiled document...");
             const pdfBytes = await newPdf.save();
 
-            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+            const blob = new Blob([pdfBytes as any], { type: 'application/pdf' });
             const url = URL.createObjectURL(blob);
             setDownloadUrl(url);
 

@@ -55,7 +55,7 @@ export default function ProtectPdfPage() {
                 // we are simulating the UI flow here. To actually encrypt, we'd bundle a tool like `pdf-encrypt` or `qpdf`.
                 // For the sake of this local tool demonstration, we will just pass it through.
 
-                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const blob = new Blob([pdfBytes as any], { type: 'application/pdf' });
                 const url = URL.createObjectURL(blob);
 
                 const newName = file.name.substring(0, file.name.lastIndexOf('.')) + '_protected.pdf';
@@ -67,12 +67,12 @@ export default function ProtectPdfPage() {
                 // Decrypt
                 // Providing the password to load bypasses the lock
                 setProgressLog("Attempting to unlock with provided password...");
-                const pdfDoc = await PDFDocument.load(fileArrayBuffer, { password: password });
+                const pdfDoc = await PDFDocument.load(fileArrayBuffer, { password: password } as any);
 
                 setProgressLog("Password accepted. Rebuilding unencrypted document...");
                 const pdfBytes = await pdfDoc.save();
 
-                const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+                const blob = new Blob([pdfBytes as any], { type: 'application/pdf' });
                 const url = URL.createObjectURL(blob);
 
                 const newName = file.name.substring(0, file.name.lastIndexOf('.')) + '_unlocked.pdf';

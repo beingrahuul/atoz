@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { RefreshCw, Download, ArrowRight } from 'lucide-react';
 import ToolLayout from '../../../components/ToolLayout';
 import FileUploadDropzone from '../../../components/FileUploadDropzone';
-import heic2any from 'heic2any';
+// heic2any is dynamically imported in processFile to avoid SSR errors
 
 type TargetFormat = 'image/jpeg' | 'image/png' | 'image/webp';
 
@@ -51,6 +51,7 @@ export default function ConvertImagePage() {
             // Handle HEIC Safari/iPhone format first via heic2any
             if (file.type === 'image/heic' || file.name.toLowerCase().endsWith('.heic')) {
                 setProgressLog("Detected HEIC format. Converting to standard image buffer first...");
+                const heic2any = (await import('heic2any')).default;
                 const result = await heic2any({
                     blob: file,
                     toType: "image/png",

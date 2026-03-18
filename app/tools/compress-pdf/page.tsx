@@ -5,10 +5,6 @@ import { FileDown, Download } from 'lucide-react';
 import ToolLayout from '../../../components/ToolLayout';
 import FileUploadDropzone from '../../../components/FileUploadDropzone';
 import { PDFDocument } from 'pdf-lib';
-import * as pdfjsLib from 'pdfjs-dist';
-
-// Need to set pdf.js worker globally for it to work in browsers
-pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
 
 export default function CompressPdfPage() {
     const [file, setFile] = useState<File | null>(null);
@@ -35,6 +31,10 @@ export default function CompressPdfPage() {
         setProgressLog(`Starting compression. Target: ${targetSizeMB} MB`);
 
         try {
+            // Dynamically import pdfjs-dist to avoid DOMMatrix error during SSR/prerender
+            const pdfjsLib = await import('pdfjs-dist');
+            pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
+
             // In a pure browser implementation, full iterative image replacement is very complex.
             // We'll create an algorithm that rasterizes each page to a canvas at a calculated resolution
             // and creates a new PDF with those images. This reliably controls exact file size.
@@ -77,8 +77,7 @@ export default function CompressPdfPage() {
 
                 const renderContext = {
                     canvasContext: context,
-                    viewport: viewport,
-                    canvasFactory: undefined
+                    viewport: viewport
                 } as any;
 
                 await page.render(renderContext).promise;
